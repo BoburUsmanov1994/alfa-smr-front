@@ -387,10 +387,9 @@ const ViewContainer = ({contract_id = null}) => {
                                 <Row align={'center'} className={'mb-25'}>
                                     <Col xs={5}>Общая страховая сумма: </Col>
                                     <Col xs={7}><Field
-                                        disabled
                                         defaultValue={get(data, 'data.data.policy.ins_sum')}
                                         params={{required: true}}
-                                        property={{hideLabel: true}} type={'number-format-input'}
+                                        property={{hideLabel: true,disabled:true}} type={'number-format-input'}
                                         name={'policy.ins_sum'}/></Col>
                                 </Row>
                             </Col>
@@ -398,10 +397,9 @@ const ViewContainer = ({contract_id = null}) => {
                                 <Row align={'center'} className={'mb-25'}>
                                     <Col xs={5}>Общая страховая премия: </Col>
                                     <Col xs={7}><Field
-                                        disabled
                                         defaultValue={get(data, 'data.data.policy.ins_premium')}
                                         params={{required: true}}
-                                        property={{hideLabel: true}} type={'number-format-input'}
+                                        property={{hideLabel: true,disabled:true}} type={'number-format-input'}
                                         name={'policy.ins_premium'}/></Col>
                                 </Row>
                             </Col>
@@ -410,10 +408,9 @@ const ViewContainer = ({contract_id = null}) => {
                                     <Col xs={5}>Страховая сумма по Разделу 1(страхование строительно-монтажных
                                         работ): </Col>
                                     <Col xs={7}><Field
-                                        disabled
                                         defaultValue={get(data, 'data.data.policy.ins_sum_otv')}
                                         params={{required: true}}
-                                        property={{hideLabel: true}} type={'number-format-input'}
+                                        property={{hideLabel: true,disabled:true}} type={'number-format-input'}
                                         name={'policy.ins_sum_otv'}/></Col>
                                 </Row>
                             </Col>
@@ -421,10 +418,9 @@ const ViewContainer = ({contract_id = null}) => {
                                 <Row align={'center'} className={'mb-25'}>
                                     <Col xs={5}>Страховая премия по Разделу 1: </Col>
                                     <Col xs={7}><Field
-                                        disabled
                                         defaultValue={get(data, 'data.data.policy.ins_premium_otv')}
                                         params={{required: true}}
-                                        property={{hideLabel: true}} type={'number-format-input'}
+                                        property={{hideLabel: true,disabled:true}} type={'number-format-input'}
                                         name={'policy.ins_premium_otv'}/></Col>
                                 </Row>
                             </Col>
@@ -435,10 +431,9 @@ const ViewContainer = ({contract_id = null}) => {
                                         ответственности перед третьими
                                         лицами): </Col>
                                     <Col xs={7}><Field
-                                        disabled
                                         defaultValue={get(data, 'data.data.policy.ins_sum_smr')}
                                         params={{required: true}}
-                                        property={{hideLabel: true}} type={'number-format-input'}
+                                        property={{hideLabel: true,disabled:true}} type={'number-format-input'}
                                         name={'policy.ins_sum_smr'}/></Col>
                                 </Row>
                             </Col>
@@ -446,10 +441,9 @@ const ViewContainer = ({contract_id = null}) => {
                                 <Row align={'center'} className={'mb-25'}>
                                     <Col xs={5}>Страховая премия по Разделу 2: </Col>
                                     <Col xs={7}><Field
-                                        disabled
                                         defaultValue={get(data, 'data.data.policy.ins_premium_smr')}
                                         params={{required: true}}
-                                        property={{hideLabel: true}} type={'number-format-input'}
+                                        property={{hideLabel: true,disabled:true}} type={'number-format-input'}
                                         name={'policy.ins_premium_smr'}/></Col>
                                 </Row>
                             </Col>

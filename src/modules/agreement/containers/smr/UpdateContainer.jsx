@@ -57,13 +57,13 @@ const UpdateContainer = ({contract_id = null}) => {
 
     }
     const update = ({data}) => {
-        const {insurant,agent_comission , ...rest} = data;
+        const {insurant, agent_comission, ...rest} = data;
         updateRequest({
                 url: URLS.osgorEdit, attributes: {
-                    agent_comission:parseFloat(agent_comission),
+                    agent_comission: parseFloat(agent_comission),
                     insurant: {...insurant, phone: `${get(insurant, 'phone')}`},
                     ...rest,
-                    contract_id:parseInt(contract_id)
+                    contract_id: parseInt(contract_id)
                 }
             },
             {
@@ -360,50 +360,8 @@ const UpdateContainer = ({contract_id = null}) => {
                                         name={'policy.ins_premium'}/></Col>
                                 </Row>
                             </Col>
-                            <Col xs={5}>
-                                <Row align={'center'} className={'mb-25'}>
-                                    <Col xs={5}>Страховая сумма по Разделу 1(страхование строительно-монтажных
-                                        работ): </Col>
-                                    <Col xs={7}><Field
-                                        defaultValue={get(data, 'data.data.policy.ins_sum_otv')}
-                                        params={{required: true}}
-                                        property={{hideLabel: true}} type={'number-format-input'}
-                                        name={'policy.ins_sum_otv'}/></Col>
-                                </Row>
-                            </Col>
-                            <Col xs={5}>
-                                <Row align={'center'} className={'mb-25'}>
-                                    <Col xs={5}>Страховая премия по Разделу 1: </Col>
-                                    <Col xs={7}><Field
-                                        defaultValue={get(data, 'data.data.policy.ins_premium_otv')}
-                                        params={{required: true}}
-                                        property={{hideLabel: true}} type={'number-format-input'}
-                                        name={'policy.ins_premium_otv'}/></Col>
-                                </Row>
-                            </Col>
-                            <Col xs={5}>
-                                <Row align={'center'} className={'mb-25'}>
-                                    <Col xs={5}>Страховая сумма по Разделу 2
-                                        (страхование гражданской
-                                        ответственности перед третьими
-                                        лицами): </Col>
-                                    <Col xs={7}><Field
-                                        defaultValue={get(data, 'data.data.policy.ins_sum_smr')}
-                                        params={{required: true}}
-                                        property={{hideLabel: true}} type={'number-format-input'}
-                                        name={'policy.ins_sum_smr'}/></Col>
-                                </Row>
-                            </Col>
-                            <Col xs={5}>
-                                <Row align={'center'} className={'mb-25'}>
-                                    <Col xs={5}>Страховая премия по Разделу 2: </Col>
-                                    <Col xs={7}><Field
-                                        defaultValue={get(data, 'data.data.policy.ins_premium_smr')}
-                                        params={{required: true}}
-                                        property={{hideLabel: true}} type={'number-format-input'}
-                                        name={'policy.ins_premium_smr'}/></Col>
-                                </Row>
-                            </Col>
+
+
                             <Col xs={12}>
                                 <hr className={'mt-15 mb-15'}/>
                             </Col>
@@ -412,9 +370,9 @@ const UpdateContainer = ({contract_id = null}) => {
                             <Col xs={4}>
                                 <Row align={'center'} className={'mb-25'}>
                                     <Col xs={5}>Агент (автоматически): </Col>
-                                    <Col xs={7}><Field  defaultValue={get(data, 'data.data.agent_id')}
-                                        property={{hideLabel: true}} type={'input'}
-                                        name={'agent_id'}/></Col>
+                                    <Col xs={7}><Field defaultValue={get(data, 'data.data.agent_id')}
+                                                       property={{hideLabel: true}} type={'input'}
+                                                       name={'agent_id'}/></Col>
                                 </Row>
                             </Col>
                             <Col xs={4}>
