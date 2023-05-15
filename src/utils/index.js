@@ -1,4 +1,5 @@
 import {includes, isEqual,get,isObject} from "lodash";
+import dayjs from "dayjs";
 
 const addDetectClick =  ({setOpen,classNames = []}) => {
     window.addEventListener("click", (e) => {
@@ -49,11 +50,22 @@ const getFieldType = (type = 'String') => {
     return 'input';
 }
 
+const saveFile = (file,name=dayjs(),extension='pdf') => {
+    const blob = new Blob([file.data]);
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `${name}.${extension}`;
+    link.click();
+    URL.revokeObjectURL(link.href);
+
+}
+
 export {
     addDetectClick,
     removeDetectClick,
     hasAccess,
     getSelectOptionsListFromData,
     formatDate,
-    getFieldType
+    getFieldType,
+    saveFile
 }

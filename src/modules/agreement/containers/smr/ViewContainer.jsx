@@ -17,6 +17,7 @@ import {OverlayLoader} from "../../../../components/loader";
 import {useNavigate} from "react-router-dom";
 import {useTranslation} from "react-i18next";
 import Swal from "sweetalert2";
+import {saveFile} from "../../../../utils";
 
 
 const ViewContainer = ({contract_id = null}) => {
@@ -493,7 +494,9 @@ const ViewContainer = ({contract_id = null}) => {
                                 <Row align={'center'} className={'mb-25'}>
                                     <Col xs={5}>Прикрепить полис: </Col>
                                     <Col xs={7}>
-                                        {get(imgData,'data.data') ? <img src={get(imgData,'data.data')} alt="img"/> :  <Field
+                                        {get(imgData,'data.data') ? <a style={{color:'#1774FF',textDecoration:'underline',cursor:'pointer'}} onClick={()=>saveFile(get(imgData,'data.data.content_string'),get(imgData,'data.data.file_name'))} >
+                                            {get(imgData,'data.data.file_name')}
+                                        </a>:  <Field
                                             params={{required: true}}
                                             property={{
                                                 disabled: true,
