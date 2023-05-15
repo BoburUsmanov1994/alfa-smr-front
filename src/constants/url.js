@@ -42,4 +42,5 @@ export const URLS = {
     activityAndRisk: 'api/references/activity-and-risks',
     osgorCalculate: 'api/smr/calculate',
     contractform: 'api/smr/police-upload',
+    getPolisFile: 'api/smr/get-polis-file',
 }

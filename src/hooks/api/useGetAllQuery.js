@@ -25,7 +25,7 @@ const useGetAllQuery = ({
         onError: (data) => {
             cb?.fail()
             if (!hideErrorMsg) {
-                toast.error(data?.response?.data?.message || `ERROR!!! ${url} api not working`)
+                toast.error(data?.response?.data?.result_message || `ERROR!!! ${url} api not working`)
             }
         },
         enabled

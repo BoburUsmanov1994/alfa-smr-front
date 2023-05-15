@@ -45,6 +45,16 @@ const ViewContainer = ({contract_id = null}) => {
         },
         enabled: !!(contract_id)
     })
+    const {data:imgData, isLoading:isLoadingImgData} = useGetAllQuery({
+        key: KEYS.getPolisFile,
+        url: URLS.getPolisFile,
+        params: {
+            params: {
+                contract_id: contract_id
+            }
+        },
+        enabled: !!(contract_id)
+    })
     const {
         mutate: confirmPayedRequest, isLoading: isLoadingConfirmPayed
     } = usePostQuery({listKeyId: KEYS.osgorView})
@@ -99,7 +109,7 @@ const ViewContainer = ({contract_id = null}) => {
     }
 
 
-    if (isLoading) {
+    if (isLoading || isLoadingImgData) {
         return <OverlayLoader/>
     }
     return (<>
@@ -482,17 +492,21 @@ const ViewContainer = ({contract_id = null}) => {
                             <Col xs={4}>
                                 <Row align={'center'} className={'mb-25'}>
                                     <Col xs={5}>Прикрепить полис: </Col>
-                                    <Col xs={7}><Field
-                                        params={{required: true}}
-                                        property={{
-                                            disabled: true,
-                                            hideLabel: true,
-                                            contract_id,
-                                            seria: get(data, 'data.data.policy.seria'),
-                                            number: get(data, 'data.data.policy.number')
-                                        }} type={'dropzone'}
-                                        name={'policy.file_id'}/></Col>
+                                    <Col xs={7}>
+                                        {get(imgData,'data.data') ? <img src={get(imgData,'data.data')} alt="img"/> :  <Field
+                                            params={{required: true}}
+                                            property={{
+                                                disabled: true,
+                                                hideLabel: true,
+                                                contract_id,
+                                                seria: get(data, 'data.data.policy.seria'),
+                                                number: get(data, 'data.data.policy.number')
+                                            }} type={'dropzone'}
+                                            name={'policy.file_id'}/>}
+                                       </Col>
+
                                 </Row>
+
                             </Col>
                             <Col xs={4}>
                                 <Row align={'center'} className={'mb-25'}>
