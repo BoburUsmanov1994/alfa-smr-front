@@ -170,20 +170,8 @@ const GridView = ({
         <Styled>
             <Panel>
                 <Row>
-                    <Col xs={10}>
+                    <Col xs={12}>
                         <Search/>
-                    </Col>
-                    <Col xs={2} className={'text-right'}>
-                        {!isEqual(role,'user') && <Button lg onClick={() => {
-                            if (createUrl) {
-                                navigate(createUrl)
-                                return
-                            }
-                            setOpenModal(true);
-                            setRowId(null)
-                        }}>
-                            {t("Добавить")}
-                        </Button>}
                     </Col>
                 </Row>
             </Panel>

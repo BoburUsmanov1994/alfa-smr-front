@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import styled from "styled-components";
-import {get, hasIn, isEmpty, isFunction,isNil} from "lodash";
+import {get, hasIn, isEmpty, isFunction, isNil} from "lodash";
 import {ErrorMessage} from "@hookform/error-message";
 import Label from "../../../../components/ui/label";
 import NumberFormat from 'react-number-format';
@@ -18,7 +18,8 @@ const Styled = styled.div`
     outline: none;
     font-family: 'Gilroy-Regular', sans-serif;
     max-width: 400px;
-    &.error{
+
+    &.error {
       border-color: #ef466f;
     }
 
@@ -28,35 +29,35 @@ const Styled = styled.div`
   }
 `;
 const NumberFormatInput = ({
-                         Controller,
-                         control,
-                         register,
-                         disabled = false,
-                         name,
-                         errors,
-                         params,
-                         property,
-                         defaultValue=0,
-                         getValues,
-                         watch,
-                         label,
-                         setValue,
-                         getValueFromField = () => {
-                         },
-                         ...rest
-                     }) => {
+                               Controller,
+                               control,
+                               register,
+                               disabled = false,
+                               name,
+                               errors,
+                               params,
+                               property,
+                               defaultValue = 0,
+                               getValues,
+                               watch,
+                               label,
+                               setValue,
+                               getValueFromField = () => {
+                               },
+                               ...rest
+                           }) => {
 
-    const [val,setVal] = useState(0)
+    const [val, setVal] = useState(0)
 
     useEffect(() => {
-        if(!isNil(defaultValue)) {
+        if (!isNil(defaultValue)) {
             setVal(defaultValue)
         }
     }, [defaultValue])
 
     useEffect(() => {
         setValue(name, val)
-        if(get(property,'onChange') && isFunction(get(property,'onChange'))) {
+        if (get(property, 'onChange') && isFunction(get(property, 'onChange'))) {
             get(property, 'onChange')(val)
         }
     }, [val])
@@ -67,7 +68,7 @@ const NumberFormatInput = ({
     return (
         <Styled {...rest}>
             <div className="form-group">
-                {!get(property,'hideLabel',false) && <Label>{label ?? name}</Label>}
+                {!get(property, 'hideLabel', false) && <Label>{label ?? name}</Label>}
                 <Controller
                     as={NumberFormat}
                     control={control}
@@ -78,14 +79,14 @@ const NumberFormatInput = ({
                         <NumberFormat
                             {...field}
                             value={val}
-                            className={`masked-input ${hasIn(errors,name) ? "error" : ''}`}
+                            className={`masked-input ${hasIn(errors, name) ? "error" : ''}`}
                             placeholder={get(property, "placeholder")}
-                            suffix={get(property, "suffix",'')}
-                            thousandSeparator={get(property, "thousandSeparator"," ")}
+                            suffix={get(property, "suffix", '')}
+                            thousandSeparator={get(property, "thousandSeparator", " ")}
                             isNumericString={true}
                             onValueChange={(value) => setVal(value.floatValue)}
-                            allowNegative={get(property, "allowNegative",false)}
-                            disabled={get(property,'disabled',false)}
+                            allowNegative={get(property, "allowNegative", false)}
+                            disabled={get(property, 'disabled', false)}
                         />
                     )}
                 />
@@ -94,15 +95,19 @@ const NumberFormatInput = ({
                     name={name}
                     render={({messages = `${label ?? name} is required`}) => {
 
-                        if (errors[name].type == 'required') {
+                        if (errors[name]?.type == 'required') {
                             messages = `${label ?? name} is required`;
                         }
-                        if (errors[name].type == 'pattern') {
+                        if (errors[name]?.type == 'pattern') {
                             messages = `${label ?? name} is not valid`;
                         }
-                        if (errors[name].type == 'manual') {
+                        if (errors[name]?.type == 'manual') {
                             messages = `${label ?? name} ${errors[name].message}`;
                         }
+                        if (errors[name]['type'] == 'max') {
+                            messages = `${label ?? name}  should be less than premium*25%`;
+                        }
+
                         return <small className="form-error-message"> {messages}</small>;
                     }}
                 />
