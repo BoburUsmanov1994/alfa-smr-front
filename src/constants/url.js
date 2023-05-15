@@ -1,7 +1,7 @@
 export const URLS = {
     getMeAlfa: 'user/f/getme',
     getMe: 'api/auth/get-me',
-    login: 'api/auth/login',
+    login: 'api/auth/sign-in',
     osgorCreate: 'api/smr/create',
     smrList: 'api/smr/list',
     osgorView: 'api/smr/show',
