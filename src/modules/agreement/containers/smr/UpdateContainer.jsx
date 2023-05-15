@@ -583,7 +583,7 @@ const UpdateContainer = ({contract_id = null}) => {
                                     <Col className={'text-right'} xs={5}>Оплаченная страховая
                                         премия: </Col>
                                     <Col xs={7}><Field
-                                        defaultValue={get(data, 'data.data.policy.ins_premium_paid')}
+                                        defaultValue={get(data, 'data.data.policy.ins_premium_paid',0)}
                                         params={{required: true}}
                                         property={{hideLabel: true}} type={'number-format-input'}
                                         name={'policy.ins_premium_paid'}/></Col>

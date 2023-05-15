@@ -84,7 +84,7 @@ const NumberFormatInput = ({
                             suffix={get(property, "suffix", '')}
                             thousandSeparator={get(property, "thousandSeparator", " ")}
                             isNumericString={true}
-                            onValueChange={(value) => setVal(value.floatValue)}
+                            onValueChange={(value) => setVal(value?.floatValue)}
                             allowNegative={get(property, "allowNegative", false)}
                             disabled={get(property, 'disabled', false)}
                         />
@@ -102,9 +102,9 @@ const NumberFormatInput = ({
                             messages = `${label ?? name} is not valid`;
                         }
                         if (errors[name]?.type == 'manual') {
-                            messages = `${label ?? name} ${errors[name].message}`;
+                            messages = `${label ?? name} ${errors[name]?.message}`;
                         }
-                        if (errors[name]['type'] == 'max') {
+                        if (errors[name]?.type == 'max') {
                             messages = `${label ?? name}  should be less than premium*25%`;
                         }
 
