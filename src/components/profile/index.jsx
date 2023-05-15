@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from "styled-components";
 import {User,ChevronDown} from "react-feather";
-import {useStore} from "../../store";
+import {useSettingsStore, useStore} from "../../store";
 import {get} from "lodash";
 
 const Styled = styled.div`
@@ -36,14 +36,14 @@ const Styled = styled.div`
 `
 
 const Profile = ({
-                     username = 'Admin',
                      ...rest
                  }) => {
-    const user = useStore(state=>get(state,'user',{})) || 'ADMIN'
+    const username = useSettingsStore(state=>get(state,'username',{}))
+    const role = useSettingsStore(state=>get(state,'role','admin'))
     return (
         <Styled {...rest}>
             <User className={'user-icon'} size={26}/>
-            <span className={'username'}>{get(user,'email','test')}({get(user,'accountrole.name','ADMIN')})</span>
+            <span className={'username'}>{username}({role})</span>
             <ChevronDown className={'chevron-icon'} size={22} />
         </Styled>
     );

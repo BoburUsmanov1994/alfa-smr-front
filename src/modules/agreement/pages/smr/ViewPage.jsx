@@ -14,10 +14,10 @@ const Styled = styled.div`
   }
 `;
 const ViewPage = ({...rest}) => {
-    const {form_id = null} = useParams();
+    const {contract_id = null} = useParams();
     return (
         <Styled {...rest}>
-            <ViewContainer form_id={form_id}/>
+            <ViewContainer contract_id={contract_id}/>
         </Styled>
     );
 };

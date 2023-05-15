@@ -94,7 +94,7 @@ const ListContainer = ({...rest}) => {
                 createUrl={'/smr/create'}
                 updateUrl={'/smr/update'}
                 isHideColumn
-                dataKey={'osgor_formId'}
+                dataKey={'contract_id'}
                 deleteUrl={URLS.smrDelete}
 
             />

@@ -9,15 +9,16 @@ const Styled = styled.div`
       width: 100%;
     }
   }
+
   .form-group {
     margin-bottom: 0;
   }
 `;
 const UpdatePage = ({...rest}) => {
-    const {form_id = null} = useParams();
+    const {contract_id = null} = useParams();
     return (
         <Styled {...rest}>
-            <UpdateContainer form_id={form_id}/>
+            <UpdateContainer contract_id={contract_id}/>
         </Styled>
     );
 };

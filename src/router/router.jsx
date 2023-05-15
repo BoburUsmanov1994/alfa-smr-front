@@ -24,8 +24,8 @@ const Router = ({...rest}) => {
                             <Route path={"smr"}>
                                 <Route index element={<SmrListPage/>}/>
                                 <Route path={"create"} element={<SmrCreatePage/>}/>
-                                <Route path={"view/:form_id"} element={<SmrViewPage/>}/>
-                                <Route path={"update/:form_id"} element={<SmrUpdatePage/>}/>
+                                <Route path={"view/:contract_id"} element={<SmrViewPage/>}/>
+                                <Route path={"update/:contract_id"} element={<SmrUpdatePage/>}/>
                             </Route>
                             <Route path="/auth/logout" element={<LogOutPage/>}/>
                             <Route path={"auth/*"} element={<Navigate to={'/smr'} replace/>}/>

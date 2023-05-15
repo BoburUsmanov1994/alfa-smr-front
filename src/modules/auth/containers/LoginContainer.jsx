@@ -18,6 +18,10 @@ const LoginContainer = ({...rest}) => {
 
     const setToken = useSettingsStore(state => get(state, 'setToken', () => {
     }))
+    const setRole = useSettingsStore(state => get(state, 'setRole', () => {
+    }))
+    const setUsername = useSettingsStore(state => get(state, 'setUsername', () => {
+    }))
     const setTranslateToken = useSettingsStore(state => get(state, 'setTranslateToken', () => {
     }))
     const navigate = useNavigate();
@@ -26,6 +30,8 @@ const LoginContainer = ({...rest}) => {
         mutate({url: URLS.login, attributes: data}, {
             onSuccess: ({data: response}) => {
                 setToken(get(response, 'data.access_token', null))
+                setRole(get(response, 'data.role', null))
+                setUsername(get(response, 'data.username', null))
                 setTranslateToken(get(data, 'data.alfa_token', null))
                 navigate("/smr");
                 i18next.reloadResources()

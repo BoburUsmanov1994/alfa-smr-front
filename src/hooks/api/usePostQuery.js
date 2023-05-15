@@ -28,12 +28,12 @@ const usePostQuery = ({hideSuccessToast = false, listKeyId = null}) => {
                     }
                 },
                 onError: (data) => {
-                    if (isArray(data?.response?.data?.message)) {
-                        forEach(data?.response?.data?.message, (msg) => {
+                    if (isArray(data?.response?.data?.result_message)) {
+                        forEach(data?.response?.data?.result_message, (msg) => {
                             toast.error(msg)
                         })
                     } else {
-                        toast.error(data?.response?.data?.message || 'ERROR')
+                        toast.error(data?.response?.data?.result_message || 'ERROR')
                     }
                 }
             }

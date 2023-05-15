@@ -26,6 +26,7 @@ import Flex from "../../components/flex";
 import Dropdown from "../../components/dropdown";
 import {Check, ChevronUp, Menu} from "react-feather";
 import {useTranslation} from "react-i18next";
+import {useSettingsStore} from "../../store";
 
 
 const Styled = styled.div`
@@ -86,6 +87,7 @@ const GridView = ({
     const {mutate: createRequest, isLoading: postLoading} = usePostQuery({listKeyId: keyId})
     const {mutate: updateRequest, isLoading: putLoading} = usePutQuery({listKeyId: keyId})
     const {mutate: deleteRequest, isLoading: deleteLoading} = useDeleteQuery({listKeyId: keyId})
+    const role = useSettingsStore(state=>get(state,'role','admin'))
 
     useEffect(() => {
         if (!isEmpty(tableHeaderData)) {
@@ -140,9 +142,9 @@ const GridView = ({
             },
         }).then((result) => {
             if (result.isConfirmed) {
-                if(dataKey){
-                    deleteRequest({url:`${deleteUrl}?osgor_formId=${id}` ?? url})
-                }else {
+                if (dataKey) {
+                    deleteRequest({url: `${deleteUrl}?contract_id=${id}` ?? url})
+                } else {
                     deleteRequest({url: `${url}/${id}`})
                 }
             }
@@ -172,7 +174,7 @@ const GridView = ({
                         <Search/>
                     </Col>
                     <Col xs={2} className={'text-right'}>
-                        <Button lg onClick={() => {
+                        {!isEqual(role,'user') && <Button lg onClick={() => {
                             if (createUrl) {
                                 navigate(createUrl)
                                 return
@@ -181,7 +183,7 @@ const GridView = ({
                             setRowId(null)
                         }}>
                             {t("Добавить")}
-                        </Button>
+                        </Button>}
                     </Col>
                 </Row>
             </Panel>

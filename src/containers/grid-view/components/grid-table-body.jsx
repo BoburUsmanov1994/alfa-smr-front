@@ -1,9 +1,8 @@
 import React from 'react';
-import {get, includes} from "lodash";
+import {get, includes, isEqual} from "lodash";
 import {Trash2, Edit, Eye} from "react-feather";
 import {useNavigate} from "react-router-dom";
-import NumberFormat from 'react-number-format';
-import dayjs from "dayjs";
+import {useSettingsStore} from "../../../store";
 
 const GridTableBody = ({
                            tableHeaderData = [],
@@ -19,6 +18,7 @@ const GridTableBody = ({
                            pageSize=20
                        }) => {
     const navigate = useNavigate();
+    const role = useSettingsStore(state=>get(state,'role','admin'))
     return (
         <>
             {
@@ -40,7 +40,7 @@ const GridTableBody = ({
                     <td>{viewUrl && <Eye
                         onClick={() => navigate(`${viewUrl}/${dataKey ? get(tr, dataKey, null) : get(tr, '_id', null)}`)}
                         className={'cursor-pointer mr-10'} size={20} color={'#78716c'}/>}
-                        {!includes(['payed','sent'],get(tr,'status')) && <>
+                        {!includes(['payed','sent'],get(tr,'status')) && !isEqual(role,'user') && <>
                         <Edit
                         onClick={() => {
                             if (updateUrl) {

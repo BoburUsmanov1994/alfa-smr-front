@@ -1,14 +1,14 @@
 export const URLS = {
     getMeAlfa: 'user/f/getme',
     getMe: 'api/auth/get-me',
-    login: 'api/auth/sign-in',
+    login: 'api/auth/login',
     osgorCreate: 'api/smr/create',
     smrList: 'api/smr/list',
     osgorView: 'api/smr/show',
     smrDelete: 'api/smr/delete',
     osgorEdit: 'api/smr/edit',
     osgorSendFond: 'api/smr/send',
-    osgorConfirmPayment: 'api/smr/confirm-payed',
+    osgorConfirmPayment: 'api/smr/confirm-payment',
     osgorCheckPayment: 'api/smr/check-payment',
     osgorEpolis: 'api/smr/get-e-polis',
     osgopCreate: 'api/osgop/create',
@@ -41,4 +41,5 @@ export const URLS = {
     okeds: 'api/references/okeds',
     activityAndRisk: 'api/references/activity-and-risks',
     osgorCalculate: 'api/smr/calculate',
+    contractform: 'api/smr/police-upload',
 }

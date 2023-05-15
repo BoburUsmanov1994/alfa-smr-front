@@ -1,6 +1,6 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {useStore} from "../../../../store";
-import {get, head, isEqual} from "lodash";
+import {get} from "lodash";
 import Panel from "../../../../components/panel";
 import Search from "../../../../components/search";
 import {Col, Row} from "react-grid-system";
@@ -10,21 +10,17 @@ import Button from "../../../../components/ui/button";
 import Form from "../../../../containers/form/form";
 import Flex from "../../../../components/flex";
 import Field from "../../../../containers/form/field";
-import {useGetAllQuery, usePostQuery} from "../../../../hooks/api";
+import { usePostQuery} from "../../../../hooks/api";
 import {KEYS} from "../../../../constants/key";
 import {URLS} from "../../../../constants/url";
-import {getSelectOptionsListFromData} from "../../../../utils";
 import {OverlayLoader} from "../../../../components/loader";
 import {useNavigate} from "react-router-dom";
 import {useTranslation} from "react-i18next";
 
 
 const CreateContainer = ({...rest}) => {
-    const [agentId, setAgentId] = useState(null)
     const [organization, setOrganization] = useState(null)
     const [inn, setInn] = useState(null)
-    const [agencyId, setAgencyId] = useState(null)
-    const [oked, setOked] = useState(null)
     const setBreadcrumbs = useStore(state => get(state, 'setBreadcrumbs', () => {
     }))
     const navigate = useNavigate();
@@ -38,32 +34,9 @@ const CreateContainer = ({...rest}) => {
 
     const user = useStore((state) => get(state, 'user'))
 
-
     useEffect(() => {
         setBreadcrumbs(breadcrumbs)
     }, [])
-
-    const {data: filials, isLoading: isLoadingFilials} = useGetAllQuery({key: KEYS.agencies, url: URLS.agencies})
-    const filialList = getSelectOptionsListFromData(get(filials, `data.result`, []), 'id', 'name')
-
-
-    const {data: okeds} = useGetAllQuery({
-        key: KEYS.okeds, url: URLS.okeds
-    })
-    const okedList = getSelectOptionsListFromData(get(okeds, `data.result`, []), 'id', 'name')
-
-
-    const {data: agents} = useGetAllQuery({
-        key: [KEYS.agents, agencyId],
-        url: URLS.agents,
-        params: {
-            params: {
-                branch: agencyId
-            }
-        },
-        enabled: !!(agencyId)
-    })
-    const agentsList = getSelectOptionsListFromData(get(agents, `data.result`, []), 'id', 'name')
 
 
     const {
@@ -71,102 +44,34 @@ const CreateContainer = ({...rest}) => {
     } = usePostQuery({listKeyId: KEYS.organizationInfoProvider})
 
     const {
-        mutate: calculatePremiumRequest
-    } = usePostQuery({listKeyId: KEYS.osgorCalculate, hideSuccessToast: true})
-    const {
         mutate: createRequest
     } = usePostQuery({listKeyId: KEYS.osgorCreate})
 
 
-    const getOrgInfo = () => {
-        getOrganizationInfoRequest({
-                url: URLS.organizationInfoProvider, attributes: {
-                    inn
-                }
-            },
-            {
-                onSuccess: ({data}) => {
-                    setOrganization(get(data, 'result'))
-                }
-            }
-        )
-    }
 
-    const calculatePremium = () => {
-        calculatePremiumRequest({
-                url: URLS.osgorCalculate, attributes: {
-                    insuranceSum: 1
-                }
-            },
-            {
-                onSuccess: ({data}) => {
-                    console.log(get(data, 'result.insurancePremium'))
-                }
-            }
-        )
-    }
+
 
     const getFieldData = (name, value) => {
-        if (isEqual(name, 'insurant.organization.oked')) {
-            setOked(value)
-        }
-        if (isEqual(name, 'insurant.oked')) {
-            setOked(value)
-        }
-        if (isEqual(name, 'agencyId')) {
-            setAgencyId(value)
-        }
-        if (isEqual(name, 'agentId')) {
-            setAgentId(value)
-        }
+
     }
     const create = ({data}) => {
-        const {
-            activityRisk,
-            birthDate,
-            fot,
-            funeralExpensesSum,
-            passportNumber,
-            passportSeries,
-            rewardPercent,
-            rewardSum,
-            risk,
-            rpmPercent,
-            rpmSum,
-            policies,
-            agentId,
-            insurant: insurantType,
-            ...rest
-        } = data
+        const {insurant, ...rest} = data;
         createRequest({
                 url: URLS.osgorCreate, attributes: {
-                    agentId: String(agentId),
-                    sum: get(head(policies), 'insuranceSum', 0),
-                    contractStartDate: get(head(policies), 'startDate'),
-                    contractEndDate: get(head(policies), 'endDate'),
-                    insurant: [],
+                    insurant: {...insurant, phone: `+${get(insurant, 'phone')}`},
                     ...rest
                 }
             },
             {
                 onSuccess: ({data: response}) => {
-                    if (get(response, 'result.osgor_formId')) {
-                        navigate(`/srm/view/${get(response, 'result.osgor_formId')}`);
+                    if (get(response, 'data.contract_id')) {
+                        navigate(`/smr/view/${get(response, 'data.contract_id')}`);
                     } else {
-                        navigate(`/srm`);
+                        navigate(`/smr`);
                     }
                 },
             }
         )
-    }
-    useEffect(() => {
-        if (false) {
-            calculatePremium()
-        }
-    }, [])
-
-    if (isLoadingFilials) {
-        return <OverlayLoader/>
     }
 
 
@@ -191,7 +96,7 @@ const CreateContainer = ({...rest}) => {
                           footer={<Flex className={'mt-32'}><Button type={'submit'}
                                                                     className={'mr-16'}>Сохранить</Button><Button
                               type={'button'} gray className={'mr-16'}>Подтвердить
-                              оплату</Button><Button type={'button'} gray className={'mr-16'}>Отправить в Фонд</Button></Flex>}>
+                              оплату</Button></Flex>}>
                         <Row gutterWidth={60} className={'mt-32'}>
                             <Col xs={5}>
                                 <Row align={'center'} className={'mb-25'}>
@@ -201,8 +106,8 @@ const CreateContainer = ({...rest}) => {
                                 <Row align={'center'} className={'mb-25'}>
                                     <Col xs={5}>Филиал </Col>
                                     <Col xs={7}><Field defaultValue={get(user, 'branch_Id.fond_id')}
-                                                       label={'Filial'} params={{required: true}} options={filialList}
-                                                       property={{hideLabel: true}} type={'select'}
+                                                       label={'Filial'}
+                                                       property={{hideLabel: true}} type={'input'}
                                                        name={'branch_id'}/></Col>
                                 </Row>
                                 <Row align={'center'} className={'mb-25'}>
@@ -214,7 +119,8 @@ const CreateContainer = ({...rest}) => {
                                 </Row>
                                 <Row align={'center'} className={'mb-25'}>
                                     <Col xs={5}>Дата договора страхования: </Col>
-                                    <Col xs={7}><Field property={{hideLabel: true, dateFormat: 'dd.MM.yyyy'}}
+                                    <Col xs={7}><Field params={{required: true}}
+                                                       property={{hideLabel: true, dateFormat: 'dd.MM.yyyy'}}
                                                        type={'datepicker'}
                                                        name={'contract_date'}/></Col>
                                 </Row>
@@ -285,7 +191,7 @@ const CreateContainer = ({...rest}) => {
                                                 onChange: (val) => setInn(val)
                                             }} name={'inn'} type={'input-mask'}/>
 
-                                            <Button onClick={getOrgInfo} className={'ml-15'} type={'button'}>Получить
+                                            <Button  className={'ml-15'} type={'button'}>Получить
                                                 данные</Button>
                                         </Flex>
                                     </Col>
@@ -309,7 +215,7 @@ const CreateContainer = ({...rest}) => {
                                            name={'insurant.name'}/>
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
-                                    <Field label={'Руководитель'} type={'input'}
+                                    <Field params={{required: true}} label={'Руководитель'} type={'input'}
                                            name={'insurant.dir_name'}/>
                                 </Col>
 
@@ -328,22 +234,20 @@ const CreateContainer = ({...rest}) => {
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field params={{required: true}}
-                                           options={okedList}
-                                           defaultValue={parseInt(get(organization, 'oked'))}
                                            label={'ОКЭД'}
-                                           type={'select'}
+                                           type={'input'}
                                            name={'insurant.oked'}/>
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
-                                    <Field label={'Bank'} type={'input'}
+                                    <Field params={{required: true}} label={'Bank'} type={'input'}
                                            name={'insurant.bank_name'}/>
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
-                                    <Field label={'Bank mfo'} type={'input'}
+                                    <Field params={{required: true}} label={'Bank mfo'} type={'input'}
                                            name={'insurant.mfo'}/>
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
-                                    <Field label={'Расчетный счет'} type={'input'}
+                                    <Field params={{required: true}} label={'Расчетный счет'} type={'input'}
                                            name={'insurant.bank_rs'}/>
                                 </Col>
                             </>
@@ -376,7 +280,7 @@ const CreateContainer = ({...rest}) => {
                                     <Col xs={7}><Field
                                         params={{required: true}}
                                         property={{hideLabel: true, dateFormat: 'dd.MM.yyyy'}} type={'datepicker'}
-                                        name={'policy.dog_date'}/></Col>
+                                        name={'building.dog_date'}/></Col>
                                 </Row>
                             </Col>
                             <Col xs={4}>
@@ -439,8 +343,7 @@ const CreateContainer = ({...rest}) => {
                                 <Row align={'center'} className={'mb-25'}>
                                     <Col xs={5}>Агент (автоматически): </Col>
                                     <Col xs={7}><Field
-                                        params={{required: true}}
-                                        property={{hideLabel: true}} type={'select'}
+                                        property={{hideLabel: true}} type={'input'}
                                         name={'agent_id'}/></Col>
                                 </Row>
                             </Col>
@@ -448,9 +351,17 @@ const CreateContainer = ({...rest}) => {
                                 <Row align={'center'} className={'mb-25'}>
                                     <Col xs={5}>Комиссия агента: </Col>
                                     <Col xs={7}><Field
-                                        params={{required: true}}
                                         property={{hideLabel: true}} type={'number-format-input'}
                                         name={'agent_comission'}/></Col>
+                                </Row>
+                            </Col>
+                            <Col xs={4}>
+                                <Row align={'center'} className={'mb-25'}>
+                                    <Col xs={5}>Транзакционный номер заявки: </Col>
+                                    <Col xs={7}><Field
+                                        params={{required: true}}
+                                        property={{hideLabel: true}} type={'input'}
+                                        name={'policy.claim_id'}/></Col>
                                 </Row>
                             </Col>
                         </Row>

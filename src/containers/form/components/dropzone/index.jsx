@@ -8,9 +8,6 @@ import Dropzone from 'react-dropzone'
 import {Paperclip} from "react-feather";
 import {usePostQuery} from "../../../../hooks/api";
 import {URLS} from "../../../../constants/url"
-import {KEYS} from "../../../../constants/key"
-import {toast} from "react-toastify";
-import {ContentLoader} from "../../../../components/loader";
 
 const Styled = styled.div`
   .form-input {
@@ -83,7 +80,10 @@ const CustomDropzone = ({
 
     const upload = (files) => {
         const formData = new FormData();
-        formData.append('file', files[0]);
+        formData.append('File', files[0]);
+        formData.append('seria', get(property, 'seria'));
+        formData.append('number', get(property, 'number'));
+        formData.append('contract_id', get(property, 'contract_id'));
 
         uploadFile({
             url: get(property, 'url', URLS.contractform), attributes: formData, config: {
@@ -93,7 +93,7 @@ const CustomDropzone = ({
             }
         }, {
             onSuccess: ({data}) => {
-                setValue(name, get(data,'data._id'))
+                setValue(name, get(data, 'data._id'))
             },
             onError: () => {
 
@@ -106,7 +106,7 @@ const CustomDropzone = ({
             <div className="form-group">
                 {!get(property, 'hideLabel', false) && <Label
                     className={classNames({required: get(property, 'hasRequiredLabel', false)})}>{label ?? name}</Label>}
-                <Dropzone onDrop={acceptedFiles => upload(acceptedFiles)}>
+                <Dropzone disabled={get(property, 'disabled')} onDrop={acceptedFiles => upload(acceptedFiles)}>
                     {({getRootProps, getInputProps}) => (
                         <section>
                             <div {...getRootProps()}>
