@@ -42,4 +42,5 @@ export const KEYS = {
     agents: 'agents',
     getPolisFile: 'getPolisFile',
     branches: 'branches',
+    calculate: 'calculate',
 }

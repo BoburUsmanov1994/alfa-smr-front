@@ -1,6 +1,6 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {useSettingsStore, useStore} from "../../../../store";
-import {get, isEqual} from "lodash";
+import {get, isEqual, isNil} from "lodash";
 import Panel from "../../../../components/panel";
 import Search from "../../../../components/search";
 import {Col, Row} from "react-grid-system";
@@ -22,12 +22,9 @@ import {getSelectOptionsListFromData} from "../../../../utils";
 const UpdateContainer = ({contract_id = null}) => {
     const [inn, setInn] = useState(null)
     const [organization, setOrganization] = useState(null)
-    const [stroyPrice, setStroyPrice] = useState(0)
-    const [ins_sum_otv, set_ins_sum_otv] = useState(0)
-    const [ins_sum_smr, set_ins_sum_smr] = useState(0)
-    const [ins_premium_smr, set_ins_premium_smr] = useState(0)
-    const [ins_premium_otv, set_ins_premium_otv] = useState(0)
+    const [current_year_price, set_current_year_price] = useState(0)
     const [regionId, setRegionId] = useState(null)
+    const [calcData, setCalcData] = useState({})
     const setBreadcrumbs = useStore(state => get(state, 'setBreadcrumbs', () => {
     }))
     const navigate = useNavigate();
@@ -94,15 +91,15 @@ const UpdateContainer = ({contract_id = null}) => {
 
     const regionsList = getSelectOptionsListFromData(get(regions, `data.data`, []), 'id', 'name')
 
-    const {data: districts, isLoading: isLoadingDistrict} = useGetAllQuery({
+    const {data: districts} = useGetAllQuery({
         key: KEYS.districts,
         url: URLS.districts,
-        params:{
-            params:{
-                region:regionId
+        params: {
+            params: {
+                region: regionId
             }
         },
-        enabled:!!(regionId)
+        enabled: !!(regionId)
     })
 
     const districtList = getSelectOptionsListFromData(get(districts, `data.data`, []), 'id', 'name')
@@ -114,6 +111,9 @@ const UpdateContainer = ({contract_id = null}) => {
     const {
         mutate: getOrganizationInfoRequest, isLoading: isLoadingOrganizationInfo
     } = usePostQuery({listKeyId: KEYS.organizationInfoProvider})
+    const {
+        mutate: calculateRequest
+    } = usePostQuery({listKeyId: KEYS.calculate, hideSuccessToast: true})
 
     useEffect(() => {
         setBreadcrumbs(breadcrumbs)
@@ -121,33 +121,34 @@ const UpdateContainer = ({contract_id = null}) => {
 
 
     const getFieldData = (name, value) => {
-        if (isEqual(name, 'building.stroy_price')) {
-            setStroyPrice(value)
-        }
-        if (isEqual(name, 'policy.ins_sum_otv')) {
-            set_ins_sum_otv(value)
-        }
-        if (isEqual(name, 'policy.ins_sum_smr')) {
-            set_ins_sum_smr(value)
-        }
-        if (isEqual(name, 'policy.ins_premium_smr')) {
-            set_ins_premium_smr(value)
-        }
-        if (isEqual(name, 'policy.ins_premium_otv')) {
-            set_ins_premium_otv(value)
+        if (isEqual(name, 'building.current_year_price')) {
+            set_current_year_price(value)
         }
         if (isEqual(name, 'insurant.regionId')) {
             setRegionId(value)
         }
     }
 
+    const calculate = (val) => {
+        calculateRequest({
+                url: URLS.calculate,
+                attributes: {current_year_price: parseFloat(val)}
+            },
+            {
+                onSuccess:({data:response})=>{
+                    setCalcData(response)
+                }
+            }
+        )
+    }
+
     const update = ({data}) => {
-        const {insurant, agent_comission,branch_id, ...rest} = data;
+        const {insurant, agent_comission, branch_id, ...rest} = data;
         updateRequest({
                 url: URLS.osgorEdit, attributes: {
-                    branch_id:String(branch_id),
+                    branch_id: String(branch_id),
                     agent_comission: parseFloat(agent_comission),
-                    insurant: {...insurant, phone: `${get(insurant, 'phone')}`,oked:String(get(insurant, 'oked'))},
+                    insurant: {...insurant, phone: `${get(insurant, 'phone')}`, oked: String(get(insurant, 'oked'))},
                     ...rest,
                     contract_id: parseInt(contract_id)
                 }
@@ -163,6 +164,7 @@ const UpdateContainer = ({contract_id = null}) => {
             }
         )
     }
+
     const getOrgInfo = () => {
         getOrganizationInfoRequest({
                 url: URLS.organizationInfoProvider, attributes: {
@@ -176,6 +178,12 @@ const UpdateContainer = ({contract_id = null}) => {
             }
         )
     }
+
+    useEffect(() => {
+        if (!isNil(current_year_price)) {
+            calculate(current_year_price)
+        }
+    }, [current_year_price])
 
     if (isLoading || isLoadingBranches || isLoadingOkeds || isLoadingOwnershipForms || isLoadingAreaTypes || isLoadingCountry || isLoadingRegion) {
         return <OverlayLoader/>
@@ -479,10 +487,10 @@ const UpdateContainer = ({contract_id = null}) => {
                                 <Row align={'center'} className={'mb-25'}>
                                     <Col className={'text-right'} xs={5}>Страховая стоимость: </Col>
                                     <Col xs={7}><Field
-                                        defaultValue={get(data, 'data.data.building.stroy_price')}
+                                        defaultValue={get(data, 'data.data.building.current_year_price')}
                                         params={{required: true}}
                                         property={{hideLabel: true}} type={'number-format-input'}
-                                        name={'building.stroy_price'}/></Col>
+                                        name={'building.current_year_price'}/></Col>
                                 </Row>
                             </Col>
                             <Col xs={12}>
@@ -494,7 +502,7 @@ const UpdateContainer = ({contract_id = null}) => {
                                 <Row align={'center'} className={'mb-25'}>
                                     <Col className={'text-right'} xs={5}>Общая страховая сумма: </Col>
                                     <Col xs={7}><Field
-                                        defaultValue={ins_sum_smr + ins_sum_otv}
+                                        defaultValue={get(calcData,'ins_sum',0)}
                                         params={{required: true}}
                                         property={{hideLabel: true, disabled: true}} type={'number-format-input'}
                                         name={'policy.ins_sum'}/></Col>
@@ -504,7 +512,7 @@ const UpdateContainer = ({contract_id = null}) => {
                                 <Row align={'center'} className={'mb-25'}>
                                     <Col className={'text-right'} xs={5}>Общая страховая премия: </Col>
                                     <Col xs={7}><Field
-                                        defaultValue={ins_premium_otv + ins_premium_smr}
+                                        defaultValue={get(calcData,'ins_premium',0)}
                                         params={{required: true}}
                                         property={{hideLabel: true, disabled: true}} type={'number-format-input'}
                                         name={'policy.ins_premium'}/></Col>
@@ -516,7 +524,7 @@ const UpdateContainer = ({contract_id = null}) => {
                                         (страхование строительно-
                                         монтажных работ):</Col>
                                     <Col xs={7}><Field
-                                        defaultValue={stroyPrice * 0.8}
+                                        defaultValue={get(calcData,'ins_sum_smr',0)}
                                         params={{required: true}}
                                         property={{hideLabel: true}} type={'number-format-input'}
                                         name={'policy.ins_sum_smr'}/></Col>
@@ -526,7 +534,7 @@ const UpdateContainer = ({contract_id = null}) => {
                                 <Row align={'center'} className={'mb-25'}>
                                     <Col className={'text-right'} xs={5}>Страховая премия по Разделу 1: </Col>
                                     <Col xs={7}><Field
-                                        defaultValue={ins_sum_smr * 0.004}
+                                        defaultValue={get(calcData,'ins_premium_smr',0)}
                                         params={{required: true}}
                                         property={{hideLabel: true}} type={'number-format-input'}
                                         name={'policy.ins_premium_smr'}/></Col>
@@ -539,7 +547,7 @@ const UpdateContainer = ({contract_id = null}) => {
                                         ответственности перед третьими
                                         лицами):</Col>
                                     <Col xs={7}><Field
-                                        defaultValue={get(data, 'data.data.policy.ins_sum_otv')}
+                                        defaultValue={get(calcData,'ins_sum_otv',0)}
                                         params={{required: true}}
                                         property={{hideLabel: true}} type={'number-format-input'}
                                         name={'policy.ins_sum_otv'}/></Col>
@@ -549,7 +557,7 @@ const UpdateContainer = ({contract_id = null}) => {
                                 <Row align={'center'} className={'mb-25'}>
                                     <Col className={'text-right'} xs={5}>Страховая премия по Разделу 2: </Col>
                                     <Col xs={7}><Field
-                                        defaultValue={ins_sum_otv * 0.004}
+                                        defaultValue={get(calcData,'ins_premium_otv',0)}
                                         params={{required: true}}
                                         property={{hideLabel: true}} type={'number-format-input'}
                                         name={'policy.ins_premium_otv'}/></Col>
@@ -572,8 +580,8 @@ const UpdateContainer = ({contract_id = null}) => {
                                 <Row align={'center'} className={'mb-25'}>
                                     <Col className={'text-right'} xs={5}>Комиссия агента: </Col>
                                     <Col xs={7}><Field
-                                        params={{max: (ins_premium_smr + ins_premium_otv) / 4}}
-                                        defaultValue={(ins_premium_smr + ins_premium_otv) / 4}
+                                        params={{max: get(calcData,'ins_premium',0)/4}}
+                                        defaultValue={get(calcData,'ins_premium',0)/4}
                                         property={{hideLabel: true}} type={'number-format-input'}
                                         name={'agent_comission'}/></Col>
                                 </Row>
@@ -583,7 +591,7 @@ const UpdateContainer = ({contract_id = null}) => {
                                     <Col className={'text-right'} xs={5}>Оплаченная страховая
                                         премия: </Col>
                                     <Col xs={7}><Field
-                                        defaultValue={get(data, 'data.data.policy.ins_premium_paid',0)}
+                                        defaultValue={get(data, 'data.data.policy.ins_premium_paid', 0)}
                                         params={{required: true}}
                                         property={{hideLabel: true}} type={'number-format-input'}
                                         name={'policy.ins_premium_paid'}/></Col>

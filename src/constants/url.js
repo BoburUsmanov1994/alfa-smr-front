@@ -44,4 +44,5 @@ export const URLS = {
     contractform: 'api/smr/police-upload',
     getPolisFile: 'api/smr/get-polis-file',
     branches: 'api/provider/branches',
+    calculate: 'api/smr/calculate',
 }

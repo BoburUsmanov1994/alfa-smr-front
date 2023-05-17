@@ -121,7 +121,7 @@ const ViewContainer = ({contract_id = null}) => {
                 url: URLS.osgorConfirmPayment, attributes: {
                     contract_id: parseInt(contract_id),
                     payment_date: get(data, 'data.data.policy.payment_date'),
-                    ins_premium: String(get(data, 'data.data.policy.ins_premium_paid'))
+                    ins_premium: String(get(data, 'data.data.policy.ins_premium'))
                 }
             },
             {
@@ -488,10 +488,10 @@ const ViewContainer = ({contract_id = null}) => {
                                 <Row align={'center'} className={'mb-25'}>
                                     <Col className={'text-right'} xs={5}>Страховая стоимость: </Col>
                                     <Col xs={7}><Field
-                                        defaultValue={get(data, 'data.data.building.stroy_price')}
+                                        defaultValue={get(data, 'data.data.building.current_year_price')}
                                         params={{required: true}}
                                         property={{hideLabel: true, disabled: true}} type={'number-format-input'}
-                                        name={'building.stroy_price'}/></Col>
+                                        name={'building.current_year_price'}/></Col>
                                 </Row>
                             </Col>
                             <Col xs={12}>
