@@ -18,6 +18,7 @@ import {useNavigate} from "react-router-dom";
 import {useTranslation} from "react-i18next";
 import Swal from "sweetalert2";
 import {getSelectOptionsListFromData, saveFile} from "../../../../utils";
+import dayjs from "dayjs";
 
 
 const ViewContainer = ({contract_id = null}) => {
@@ -120,7 +121,7 @@ const ViewContainer = ({contract_id = null}) => {
         confirmPayedRequest({
                 url: URLS.osgorConfirmPayment, attributes: {
                     contract_id: parseInt(contract_id),
-                    payment_date: get(data, 'data.data.policy.payment_date'),
+                    payment_date: dayjs().format("YYYY-MM-DD HH:mm:ss"),
                     ins_premium: String(get(data, 'data.data.policy.ins_premium'))
                 }
             },
