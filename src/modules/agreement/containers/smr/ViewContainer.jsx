@@ -187,7 +187,7 @@ const ViewContainer = ({contract_id = null}) => {
             <Row>
                 <Col xs={12}>
                     <Form
-                        footer={!isEqual(role,'user') && !isEqual(get(data, 'data.data.status'), 'paid') && <Flex
+                        footer={!isEqual(role,'user') && !isEqual(get(data, 'data.data.status'), 'paid') && !isEqual(get(data, 'data.data.status'), 'policy issued') && <Flex
                             className={'mt-32'}>{(isEqual(get(data, 'data.data.status'), 'new') || isEqual(get(data, 'data.data.status'), 'edited')) && <>
                             <Button onClick={remove}
                                     danger type={'button'}
@@ -613,12 +613,12 @@ const ViewContainer = ({contract_id = null}) => {
                                 <Row align={'center'} className={'mb-25'}>
                                     <Col className={'text-right'} xs={5}>Прикрепить полис: </Col>
                                     <Col xs={7}>
-                                        {get(imgData,'data.data') ? <a style={{color:'#1774FF',textDecoration:'underline',cursor:'pointer'}} onClick={()=>saveFile(get(imgData,'data.data.content_string'),get(imgData,'data.data.file_name'))} >
+                                        {get(imgData,'data.data') ? <a style={{color:'#1774FF',textDecoration:'underline',cursor:'pointer'}} download={get(imgData,'data.data.file_name')} href={`data:application/pdf;base64,${get(imgData,'data.data.content_string')}`} >
                                             {get(imgData,'data.data.file_name')}
                                         </a>:  <Field
                                             params={{required: true}}
                                             property={{
-                                                disabled: true,
+                                                disabled: isEqual(role,'user'),
                                                 hideLabel: true,
                                                 contract_id,
                                                 seria: get(data, 'data.data.policy.seria'),
