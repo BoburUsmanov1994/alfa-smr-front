@@ -593,7 +593,7 @@ const UpdateContainer = ({contract_id = null}) => {
                                     <Col xs={7}><Field
                                         defaultValue={get(data, 'data.data.policy.ins_premium_paid', 0)}
                                         params={{required: true}}
-                                        property={{hideLabel: true}} type={'number-format-input'}
+                                        property={{hideLabel: true,disabled:true}} type={'number-format-input'}
                                         name={'policy.ins_premium_paid'}/></Col>
                                 </Row>
                             </Col>
