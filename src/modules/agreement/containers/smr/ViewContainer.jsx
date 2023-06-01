@@ -187,7 +187,7 @@ const ViewContainer = ({contract_id = null}) => {
             <Row>
                 <Col xs={12}>
                     <Form
-                        footer={!isEqual(role,'user') && !isEqual(get(data, 'data.data.status'), 'paid') && !isEqual(get(data, 'data.data.status'), 'policy issued') && <Flex
+                        footer={!isEqual(role,'user') && !isEqual(get(data, 'data.data.status'), 'paid') && !isEqual(get(data, 'data.data.status'), 'policy issued')&& !isEqual(get(data, 'data.data.status'), 'policy sent') && <Flex
                             className={'mt-32'}>{(isEqual(get(data, 'data.data.status'), 'new') || isEqual(get(data, 'data.data.status'), 'edited')) && <>
                             <Button onClick={remove}
                                     danger type={'button'}
