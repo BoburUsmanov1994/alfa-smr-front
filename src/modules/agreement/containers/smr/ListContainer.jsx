@@ -7,6 +7,7 @@ import {URLS} from "../../../../constants/url";
 import Field from "../../../../containers/form/field";
 import {useTranslation} from "react-i18next";
 import NumberFormat from "react-number-format";
+import dayjs from "dayjs";
 
 const ListContainer = ({...rest}) => {
     const {t} = useTranslation()
@@ -79,6 +80,12 @@ const ListContainer = ({...rest}) => {
                         key: 'policy.ins_premium',
                         title: 'Insurance premium',
                         render: ({value}) => <NumberFormat displayType={'text'} thousandSeparator={' '} value={value}/>
+                    },
+                    {
+                        id: 7,
+                        key: 'createdAt',
+                        title: 'Created at',
+                        render: ({value}) => value ? dayjs(value).format("DD-MM-YYYY HH:mm") : '-'
                     },
                     {
                         id: 9,
