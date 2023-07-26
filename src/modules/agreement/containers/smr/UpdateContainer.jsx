@@ -22,7 +22,7 @@ import {getSelectOptionsListFromData} from "../../../../utils";
 const UpdateContainer = ({contract_id = null}) => {
     const [inn, setInn] = useState(null)
     const [organization, setOrganization] = useState(null)
-    const [current_year_price, set_current_year_price] = useState(0)
+    const [current_year_price, set_current_year_price] = useState(null)
     const [regionId, setRegionId] = useState(null)
     const [calcData, setCalcData] = useState({})
     const setBreadcrumbs = useStore(state => get(state, 'setBreadcrumbs', () => {
