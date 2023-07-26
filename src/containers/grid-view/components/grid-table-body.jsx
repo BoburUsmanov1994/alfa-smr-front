@@ -40,7 +40,7 @@ const GridTableBody = ({
                     <td>{viewUrl && <Eye
                         onClick={() => navigate(`${viewUrl}/${dataKey ? get(tr, dataKey, null) : get(tr, '_id', null)}`)}
                         className={'cursor-pointer mr-10'} size={20} color={'#78716c'}/>}
-                        {!includes(['paid','policy sent','policy issued'],get(tr,'status')) && !isEqual(role,'user') && <>
+                        {!includes(['sent','policy sent','policy issued'],get(tr,'status')) && !isEqual(role,'user') && <>
                         <Edit
                         onClick={() => {
                             if (updateUrl) {

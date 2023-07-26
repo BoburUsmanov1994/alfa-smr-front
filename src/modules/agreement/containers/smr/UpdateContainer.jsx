@@ -608,20 +608,20 @@ const UpdateContainer = ({contract_id = null}) => {
                                         name={'policy.payment_date'}/></Col>
                                 </Row>
                             </Col>
-                            <Col xs={4}>
-                                <Row align={'center'} className={'mb-25'}>
-                                    <Col className={'text-right'} xs={5}>Прикрепить полис: </Col>
-                                    <Col xs={7}><Field
-                                        params={{required: true}}
-                                        property={{
-                                            hideLabel: true,
-                                            contract_id,
-                                            seria: get(data, 'data.data.policy.seria'),
-                                            number: get(data, 'data.data.policy.number')
-                                        }} type={'dropzone'}
-                                        name={'policy.file_id'}/></Col>
-                                </Row>
-                            </Col>
+                            {/*<Col xs={4}>*/}
+                            {/*    <Row align={'center'} className={'mb-25'}>*/}
+                            {/*        <Col className={'text-right'} xs={5}>Прикрепить полис: </Col>*/}
+                            {/*        <Col xs={7}><Field*/}
+                            {/*            params={{required: true}}*/}
+                            {/*            property={{*/}
+                            {/*                hideLabel: true,*/}
+                            {/*                contract_id,*/}
+                            {/*                seria: get(data, 'data.data.policy.seria'),*/}
+                            {/*                number: get(data, 'data.data.policy.number')*/}
+                            {/*            }} type={'dropzone'}*/}
+                            {/*            name={'policy.file_id'}/></Col>*/}
+                            {/*    </Row>*/}
+                            {/*</Col>*/}
                         </Row>
                     </Form>
                 </Col>

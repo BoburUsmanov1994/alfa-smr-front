@@ -35,7 +35,7 @@ const ViewContainer = ({contract_id = null}) => {
 
     const {t} = useTranslation()
 
-    const role = useSettingsStore(state=>get(state,'role','admin'))
+    const role = useSettingsStore(state => get(state, 'role', 'admin'))
 
     const {data, isLoading} = useGetAllQuery({
         key: KEYS.osgorView,
@@ -47,7 +47,7 @@ const ViewContainer = ({contract_id = null}) => {
         },
         enabled: !!(contract_id)
     })
-    const {data:imgData, isLoading:isLoadingImgData} = useGetAllQuery({
+    const {data: imgData, isLoading: isLoadingImgData} = useGetAllQuery({
         key: KEYS.getPolisFile,
         url: URLS.getPolisFile,
         params: {
@@ -103,17 +103,20 @@ const ViewContainer = ({contract_id = null}) => {
     const {data: districts, isLoading: isLoadingDistrict} = useGetAllQuery({
         key: KEYS.districts,
         url: URLS.districts,
-        params:{
-            params:{
-                region:get(data, 'data.data.insurant.regionId')
+        params: {
+            params: {
+                region: get(data, 'data.data.insurant.regionId')
             }
         },
-        enabled:!!(get(data, 'data.data.insurant.regionId'))
+        enabled: !!(get(data, 'data.data.insurant.regionId'))
     })
 
     const districtList = getSelectOptionsListFromData(get(districts, `data.data`, []), 'id', 'name')
     const {
         mutate: confirmPayedRequest, isLoading: isLoadingConfirmPayed
+    } = usePostQuery({listKeyId: KEYS.osgorView})
+    const {
+        mutate: sendFondRequest, isLoading: isLoadingSendFond
     } = usePostQuery({listKeyId: KEYS.osgorView})
     const {mutate: deleteRequest, isLoading: deleteLoading} = useDeleteQuery({listKeyId: KEYS.osgopDelete})
 
@@ -124,6 +127,18 @@ const ViewContainer = ({contract_id = null}) => {
                     payment_date: dayjs().format("YYYY-MM-DD HH:mm:ss"),
                     ins_premium: String(get(data, 'data.data.policy.ins_premium'))
                 }
+            },
+            {
+                onSuccess: ({data}) => {
+
+                }
+            }
+        )
+    }
+
+    const sendFond = () => {
+        sendFondRequest({
+                url: `${URLS.osgorSendFond}?contract_id=${parseInt(contract_id)}`
             },
             {
                 onSuccess: ({data}) => {
@@ -170,7 +185,7 @@ const ViewContainer = ({contract_id = null}) => {
         return <OverlayLoader/>
     }
     return (<>
-        {(deleteLoading || isLoadingConfirmPayed) && <OverlayLoader/>}
+        {(deleteLoading || isLoadingConfirmPayed || isLoadingSendFond) && <OverlayLoader/>}
         <Panel>
             <Row>
                 <Col xs={12}>
@@ -187,16 +202,24 @@ const ViewContainer = ({contract_id = null}) => {
             <Row>
                 <Col xs={12}>
                     <Form
-                        footer={!isEqual(role,'user') && !isEqual(get(data, 'data.data.status'), 'paid') && !isEqual(get(data, 'data.data.status'), 'policy issued')&& !isEqual(get(data, 'data.data.status'), 'policy sent') && <Flex
+                        footer={!isEqual(role, 'user') && !isEqual(get(data, 'data.data.status'), 'sent') && !isEqual(get(data, 'data.data.status'), 'policy issued') && !isEqual(get(data, 'data.data.status'), 'policy sent') &&
+                        <Flex
                             className={'mt-32'}>{(isEqual(get(data, 'data.data.status'), 'new') || isEqual(get(data, 'data.data.status'), 'edited')) && <>
                             <Button onClick={remove}
                                     danger type={'button'}
                                     className={'mr-16'}>Удалить</Button>
                             <Button onClick={() => navigate(`/smr/update/${contract_id}`)} yellow type={'button'}
                                     className={'mr-16'}>Изменить</Button></>}
-                            <Button onClick={confirmPayed}
+                            <Button gray={isEqual(get(data, 'data.data.status'), 'paid')}
+                                    onClick={(isEqual(get(data, 'data.data.status'), 'paid') || isEqual(get(data, 'data.data.status'), 'sent')) ? () => {
+                                    } : confirmPayed}
                                     type={'button'} className={'mr-16'}>Подтвердить
-                                оплату</Button></Flex>}>
+                                оплату</Button>
+                            <Button gray={!isEqual(get(data, 'data.data.status'), 'paid')}
+                                    onClick={isEqual(get(data, 'data.data.status'), 'paid') ? sendFond : () => {
+                                    }}
+                                    type={'button'} className={'mr-16'}>Отправить в Фонд </Button>
+                        </Flex>}>
                         <Row gutterWidth={60} className={'mt-32'}>
                             <Col xs={5}>
                                 <Row align={'center'} className={'mb-25'}>
@@ -205,7 +228,8 @@ const ViewContainer = ({contract_id = null}) => {
                                 </Row>
                                 <Row align={'center'} className={'mb-25'}>
                                     <Col className={'text-right'} xs={5}>Филиал </Col>
-                                    <Col xs={7}><Field disabled defaultValue={parseInt(get(data, 'data.data.branch_id',721))}
+                                    <Col xs={7}><Field disabled
+                                                       defaultValue={parseInt(get(data, 'data.data.branch_id', 721))}
                                                        label={'Filial'}
                                                        options={branchesList}
                                                        property={{hideLabel: true, disabled: true}} type={'select'}
@@ -396,7 +420,7 @@ const ViewContainer = ({contract_id = null}) => {
                                 <Col xs={3} className={'mb-25'}>
                                     <Field
                                         disabled
-                                        defaultValue={parseInt( get(data, 'data.data.insurant.regionId'))}
+                                        defaultValue={parseInt(get(data, 'data.data.insurant.regionId'))}
                                         options={regionsList}
                                         label={'Область'}
                                         type={'select'}
@@ -405,7 +429,7 @@ const ViewContainer = ({contract_id = null}) => {
                                 <Col xs={3} className={'mb-25'}>
                                     <Field
                                         disabled
-                                        defaultValue={parseInt( get(data, 'data.data.insurant.districtId'))}
+                                        defaultValue={parseInt(get(data, 'data.data.insurant.districtId'))}
                                         options={districtList}
                                         label={'Район'}
                                         type={'select'}
@@ -506,7 +530,7 @@ const ViewContainer = ({contract_id = null}) => {
                                     <Col xs={7}><Field
                                         defaultValue={get(data, 'data.data.policy.ins_sum')}
                                         params={{required: true}}
-                                        property={{hideLabel: true,disabled:true}} type={'number-format-input'}
+                                        property={{hideLabel: true, disabled: true}} type={'number-format-input'}
                                         name={'policy.ins_sum'}/></Col>
                                 </Row>
                             </Col>
@@ -516,18 +540,19 @@ const ViewContainer = ({contract_id = null}) => {
                                     <Col xs={7}><Field
                                         defaultValue={get(data, 'data.data.policy.ins_premium')}
                                         params={{required: true}}
-                                        property={{hideLabel: true,disabled:true}} type={'number-format-input'}
+                                        property={{hideLabel: true, disabled: true}} type={'number-format-input'}
                                         name={'policy.ins_premium'}/></Col>
                                 </Row>
                             </Col>
                             <Col xs={6}>
                                 <Row align={'center'} className={'mb-25'}>
-                                    <Col className={'text-right'} xs={5}>Страховая сумма по Разделу 1(страхование строительно-монтажных
+                                    <Col className={'text-right'} xs={5}>Страховая сумма по Разделу 1(страхование
+                                        строительно-монтажных
                                         работ): </Col>
                                     <Col xs={7}><Field
                                         defaultValue={get(data, 'data.data.policy.ins_sum_smr')}
                                         params={{required: true}}
-                                        property={{hideLabel: true,disabled:true}} type={'number-format-input'}
+                                        property={{hideLabel: true, disabled: true}} type={'number-format-input'}
                                         name={'policy.ins_sum_smr'}/></Col>
                                 </Row>
                             </Col>
@@ -537,7 +562,7 @@ const ViewContainer = ({contract_id = null}) => {
                                     <Col xs={7}><Field
                                         defaultValue={get(data, 'data.data.policy.ins_premium_smr')}
                                         params={{required: true}}
-                                        property={{hideLabel: true,disabled:true}} type={'number-format-input'}
+                                        property={{hideLabel: true, disabled: true}} type={'number-format-input'}
                                         name={'policy.ins_premium_smr'}/></Col>
                                 </Row>
                             </Col>
@@ -550,7 +575,7 @@ const ViewContainer = ({contract_id = null}) => {
                                     <Col xs={7}><Field
                                         defaultValue={get(data, 'data.data.policy.ins_sum_otv')}
                                         params={{required: true}}
-                                        property={{hideLabel: true,disabled:true}} type={'number-format-input'}
+                                        property={{hideLabel: true, disabled: true}} type={'number-format-input'}
                                         name={'policy.ins_sum_otv'}/></Col>
                                 </Row>
                             </Col>
@@ -560,7 +585,7 @@ const ViewContainer = ({contract_id = null}) => {
                                     <Col xs={7}><Field
                                         defaultValue={get(data, 'data.data.policy.ins_premium_otv')}
                                         params={{required: true}}
-                                        property={{hideLabel: true,disabled:true}} type={'number-format-input'}
+                                        property={{hideLabel: true, disabled: true}} type={'number-format-input'}
                                         name={'policy.ins_premium_otv'}/></Col>
                                 </Row>
                             </Col>
@@ -609,27 +634,19 @@ const ViewContainer = ({contract_id = null}) => {
                                                        name={'policy.payment_date'}/></Col>
                                 </Row>
                             </Col>
-                            <Col xs={4}>
+                            {get(imgData, 'data.data') && <Col xs={4}>
                                 <Row align={'center'} className={'mb-25'}>
                                     <Col className={'text-right'} xs={5}>Прикрепить полис: </Col>
                                     <Col xs={7}>
-                                        {get(imgData,'data.data') ? <a style={{color:'#1774FF',textDecoration:'underline',cursor:'pointer'}} download={get(imgData,'data.data.file_name')} href={`data:application/pdf;base64,${get(imgData,'data.data.content_string')}`} >
-                                            {get(imgData,'data.data.file_name')}
-                                        </a>:  <Field
-                                            params={{required: true}}
-                                            property={{
-                                                disabled: isEqual(role,'user'),
-                                                hideLabel: true,
-                                                contract_id,
-                                                seria: get(data, 'data.data.policy.seria'),
-                                                number: get(data, 'data.data.policy.number')
-                                            }} type={'dropzone'}
-                                            name={'policy.file_id'}/>}
+                                        <a style={{color: '#1774FF', textDecoration: 'underline', cursor: 'pointer'}}
+                                           download={get(imgData, 'data.data.file_name')}
+                                           href={`data:application/pdf;base64,${get(imgData, 'data.data.content_string')}`}>
+                                            {get(imgData, 'data.data.file_name')}
+                                        </a>
                                     </Col>
-
                                 </Row>
-
                             </Col>
+                            }
                         </Row>
                     </Form>
                 </Col>
