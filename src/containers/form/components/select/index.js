@@ -37,7 +37,7 @@ const StyledFormSelect = styled.div`
   `}
 
 
-  
+
 `;
 
 const DropdownIndicator = props => {
@@ -175,7 +175,7 @@ const FormSelect = ({
                 <ErrorMessage
                     errors={errors}
                     name={name}
-                    render={({messages = `${label} is required`}) => {
+                    render={({messages = `${label ?? name} is required`}) => {
 
                         if (errors[name]?.type == 'required') {
                             messages = `${label} is required`;

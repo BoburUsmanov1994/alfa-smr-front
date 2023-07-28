@@ -257,7 +257,7 @@ const UpdateContainer = ({contract_id = null}) => {
                                     <Col className={'text-right'} xs={5}>Номер полиса: </Col>
                                     <Col xs={7}><Field defaultValue={get(data, 'data.data.policy.number')}
                                                        params={{required: true}}
-                                                       property={{hideLabel: true}}
+                                                       property={{hideLabel: true,disabled:true}}
                                                        type={'input'}
                                                        name={'policy.number'}/></Col>
                                 </Row>
@@ -357,7 +357,7 @@ const UpdateContainer = ({contract_id = null}) => {
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field
-                                        defaultValue={parseInt(get(organization, 'data.oked', get(data, 'data.data.insurant.oked')))}
+                                        defaultValue={parseInt(get(organization, 'data.oked', get(data, 'data.data.insurant.oked'))) || null}
                                         params={{required: true}}
                                         options={okedList}
                                         label={'ОКЭД'}
@@ -381,7 +381,8 @@ const UpdateContainer = ({contract_id = null}) => {
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field
-                                        defaultValue={parseInt(get(organization, 'data.ownershipFormId', get(data, 'data.data.insurant.ownershipFormId')))}
+                                        params={{required:true}}
+                                        defaultValue={parseInt(get(organization, 'data.ownershipFormId', get(data, 'data.data.insurant.ownershipFormId'))) || null}
                                         options={ownershipFormsList}
                                         label={'Форма собственности'}
                                         type={'select'}
@@ -397,7 +398,8 @@ const UpdateContainer = ({contract_id = null}) => {
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field
-                                        defaultValue={parseInt(get(organization, 'data.regionId', get(data, 'data.data.insurant.regionId')))}
+                                        params={{required:true}}
+                                        defaultValue={parseInt(get(organization, 'data.regionId', get(data, 'data.data.insurant.regionId'))) || null}
                                         options={regionsList}
                                         label={'Область'}
                                         type={'select'}
@@ -405,7 +407,8 @@ const UpdateContainer = ({contract_id = null}) => {
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field
-                                        defaultValue={parseInt(get(organization, 'data.districtId', get(data, 'data.data.insurant.districtId')))}
+                                        params={{required:true}}
+                                        defaultValue={parseInt(get(organization, 'data.districtId', get(data, 'data.data.insurant.districtId'))) || null}
                                         options={districtList}
                                         label={'Район'}
                                         type={'select'}
@@ -413,7 +416,8 @@ const UpdateContainer = ({contract_id = null}) => {
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field
-                                        defaultValue={parseInt(get(organization, 'data.areaTypeId', get(data, 'data.data.insurant.areaTypeId')))}
+                                        params={{required:true}}
+                                        defaultValue={parseInt(get(organization, 'data.areaTypeId', get(data, 'data.data.insurant.areaTypeId'))) || null}
                                         options={areaTypesList}
                                         label={'Тип местности'}
                                         type={'select'}
