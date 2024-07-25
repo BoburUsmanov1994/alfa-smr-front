@@ -1,4 +1,4 @@
-import {includes, isEqual,get,isObject} from "lodash";
+import {includes, isEqual, get, isObject, isArray} from "lodash";
 import dayjs from "dayjs";
 
 const addDetectClick =  ({setOpen,classNames = []}) => {
@@ -34,7 +34,7 @@ const formatDate  = (date) => {
 
 
 const getSelectOptionsListFromData = (data = [], value = 'id', label = 'title') => {
-    return data.map(item => isObject(item) ?  ({ value: item[value], label: get(item,label) }) : ({ value: item, label: item})) || [];
+    return isArray(data) ? data.map(item => isObject(item) ?  ({ value: item[value], label: get(item,label) }) : ({ value: item, label: item})) : [];
 }
 
 const getFieldType = (type = 'String') => {
